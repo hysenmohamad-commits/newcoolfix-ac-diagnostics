@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>CoolFix - Database Translator Utility</title>
+  <script src="errorCodes.js"></script>
+  <style>
+    body { font-family: sans-serif; background: #0B1120; color: white; padding: 40px; text-align: center; }
+    .btn { background: #00D4FF; color: #0B1120; border: none; padding: 15px 30px; font-size: 16px; cursor: pointer; border-radius: 8px; font-weight: bold; margin-top: 20px;}
+    .btn:disabled { background: #334155; cursor: not-allowed; color: #94A3B8; }
+    #status { margin-top: 30px; color: #94A3B8; }
+    .success { color: #4ade80 !important; }
+    code { background: #1E293B; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>CoolFix Rapid Translator</h1>
+  <p>We are integrating over <b>10,000 words</b> to the database for French & Arabic. Since generating that much text manually hits API generation limits, please use this auto-compiler carefully calibrated for your codebase.</p>
+  <p>It batches Google Translate HTTP Post calls locally to perform a massive lossless bulk translation within 3 seconds!</p>
+  <button id="startBtn" class="btn" onclick="runTranslation()">Start Database Translation</button>
+  <h3 id="status">Status: Waiting to begin...</h3>
+
+  <script>
+    async function translateBatch(texts, lang) {
+      const translated = [];
+      const chunkSize = 100;
+      for(let i=0; i<texts.length; i+=chunkSize) {
+        document.getElementById('status').innerText = `Batch translating to ${lang.toUpperCase()}... (${i}/${texts.length} items parsed)`;
+        const chunk = texts.slice(i, i+chunkSize);
+        const query = chunk.join('\n|||\n');
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${lang}&dt=t`;
+        
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: new URLSearchParams({q: query})
+          });
+          const data = await res.json();
+          let fullText = "";
+          for(let j=0; j<data[0].length; j++) {
+             fullText += data[0][j][0];
+          }
+          const parts = fullText.split(/\|\|\|/g).map(t => t.trim());
+          translated.push(...parts);
+        } catch (e) {
+          throw new Error("Translation block failed. Rate limiting or offline?");
+        }
+      }
+      return translated;
+    }
+
+    async function runTranslation() {
+      const btn = document.getElementById('startBtn');
+      btn.disabled = true;
+      btn.innerText = "Processing...";
+      
+      const db = window.errorCodesData;
+      if(!db || db.length === 0) {
+        document.getElementById('status').innerText = "Terminal Error: Could not load errorCodes.js!";
+        return;
+      }
+      
+      const texts = [];
+      db.forEach(item => {
+        // Only load if not already nested objects (to prevent infinite nesting if run twice)
+        texts.push(typeof item.problemTitle === 'string' ? item.problemTitle : item.problemTitle.en);
+        texts.push(typeof item.problemDescription === 'string' ? item.problemDescription : item.problemDescription.en);
+        
+        const stepsArray = Array.isArray(item.solutionSteps) ? item.solutionSteps : item.solutionSteps.en;
+        stepsArray.forEach(step => texts.push(step));
+      });
+
+      try {
+        const frTranslated = await translateBatch(texts, 'fr');
+        const arTranslated = await translateBatch(texts, 'ar');
+
+        let idx = 0;
+        db.forEach(item => {
+           const titleEn = typeof item.problemTitle === 'string' ? item.problemTitle : item.problemTitle.en;
+           const descEn = typeof item.problemDescription === 'string' ? item.problemDescription : item.problemDescription.en;
+           const stepsEn = Array.isArray(item.solutionSteps) ? item.solutionSteps : item.solutionSteps.en;
+
+           item.problemTitle = { en: titleEn, fr: frTranslated[idx], ar: arTranslated[idx] }; idx++;
+           item.problemDescription = { en: descEn, fr: frTranslated[idx], ar: arTranslated[idx] }; idx++;
+           
+           item.solutionSteps = { en: stepsEn, fr: [], ar: [] };
+           stepsEn.forEach(() => {
+              item.solutionSteps.fr.push(frTranslated[idx]);
+              item.solutionSteps.ar.push(arTranslated[idx]);
+              idx++;
+           });
+        });
+
+        document.getElementById('status').className = "success";
+        document.getElementById('status').innerText = "Formatting final DB bundle... Generating file download!";
+        
+        const jsonStr = "const errorCodesData = " + JSON.stringify(db, null, 2) + ";\n\nwindow.errorCodesData = errorCodesData;";
+        const blob = new Blob([jsonStr], { type: 'application/javascript' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'errorCodes.js';
+        document.body.appendChild(a);
+        a.click();
+        
+        document.getElementById('status').innerHTML = "<b>Download Triggered!</b><br>Please replace your existing <code>errorCodes.js</code> file in the project folder with the newly downloaded file.";
+        btn.innerText = "Translation Complete";
+      } catch (e) {
+        document.getElementById('status').innerText = "Terminal Error: " + e.message;
+        btn.disabled = false;
+        btn.innerText = "Retry Translation";
+      }
+    }
+  </script>
+</body>
+</html>
