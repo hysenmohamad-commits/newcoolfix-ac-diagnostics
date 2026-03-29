@@ -104,36 +104,40 @@ function App() {
   }, [selectedBrand]);
 
   const severityColors = {
-    minor: 'bg-green-500/10 text-green-400 border-green-500/20',
-    moderate: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    critical: 'bg-red-500/10 text-red-400 border-red-500/20'
+    minor: 'bg-green-900 text-green-300 border-green-500',
+    moderate: 'bg-amber-900 text-amber-300 border-amber-500',
+    critical: 'bg-red-900 text-red-300 border-red-500'
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 min-h-screen flex flex-col pt-12 relative">
-      <div className="absolute top-6 right-6 flex gap-2 bg-slate-800/80 p-2 rounded-lg border border-slate-700 shadow-xl backdrop-blur-sm z-50">
-        <button onClick={() => setLang('en')} className={`px-4 py-1.5 text-xs font-bold rounded transition-colors ${lang === 'en' ? 'bg-cyanAccent text-bgDark' : 'text-slate-400 hover:text-white'}`}>EN</button>
-        <button onClick={() => setLang('fr')} className={`px-4 py-1.5 text-xs font-bold rounded transition-colors ${lang === 'fr' ? 'bg-cyanAccent text-bgDark' : 'text-slate-400 hover:text-white'}`}>FR</button>
-        <button onClick={() => setLang('ar')} className={`px-4 py-1.5 text-xs font-bold rounded transition-colors ${lang === 'ar' ? 'bg-cyanAccent text-bgDark' : 'text-slate-400 hover:text-white'}`} dir="rtl">عربي</button>
+    <div className="max-w-5xl mx-auto p-6 min-h-screen flex flex-col relative">
+      
+      {/* Languages placement fixed: moved to document flow instead of absolute positioning */}
+      <div className="flex justify-end mb-6">
+        <div className="flex gap-2 bg-slate-900 p-1.5 rounded-lg border border-slate-600 shadow-md">
+          <button onClick={() => setLang('en')} className={`px-4 py-1.5 text-xs font-bold rounded transition-colors ${lang === 'en' ? 'bg-cyanAccent text-bgDark' : 'text-slate-300 hover:bg-slate-800 hover:text-white'}`}>EN</button>
+          <button onClick={() => setLang('fr')} className={`px-4 py-1.5 text-xs font-bold rounded transition-colors ${lang === 'fr' ? 'bg-cyanAccent text-bgDark' : 'text-slate-300 hover:bg-slate-800 hover:text-white'}`}>FR</button>
+          <button onClick={() => setLang('ar')} className={`px-4 py-1.5 text-xs font-bold rounded transition-colors ${lang === 'ar' ? 'bg-cyanAccent text-bgDark' : 'text-slate-300 hover:bg-slate-800 hover:text-white'}`} dir="rtl">عربي</button>
+        </div>
       </div>
 
-      <header className="mb-12 text-center">
-        <h1 className="text-4xl font-bold tracking-tight mb-2 flex justify-center items-center gap-3">
+      <header className="mb-10 text-center">
+        <h1 className="text-4xl font-bold tracking-tight mb-2 flex justify-center items-center gap-3 text-white">
           <IconWrench /> CoolFix
         </h1>
-        <p className="text-slate-400 text-lg">Industrial AC Diagnostic Terminal</p>
+        <p className="text-slate-300 text-lg font-medium">Industrial AC Diagnostic Terminal</p>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 flex-grow">
         <div className="md:col-span-4 space-y-8">
           <div>
-            <h2 className="text-sm uppercase tracking-widest text-slate-500 font-semibold mb-3">Target Platform</h2>
+            <h2 className="text-sm uppercase tracking-widest text-slate-400 font-bold mb-3">Target Platform</h2>
             <div className="grid grid-cols-2 gap-2">
               {BRANDS.map(brand => (
                 <button
                   key={brand}
                   onClick={() => setSelectedBrand(brand)}
-                  className={`py-2 px-2 text-xs font-medium rounded-md transition-all border ${selectedBrand === brand ? 'bg-cyanAccent/10 border-cyanAccent text-cyanAccent shadow-[0_0_15px_rgba(0,212,255,0.2)]' : 'bg-bgCard border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white'}`}
+                  className={`py-2 px-2 text-xs font-bold rounded-md transition-all border ${selectedBrand === brand ? 'bg-cyanAccent border-cyanAccent text-bgDark shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'bg-slate-900 border-slate-600 text-slate-200 hover:border-cyanAccent hover:text-white'}`}
                 >
                   {brand}
                 </button>
@@ -142,29 +146,29 @@ function App() {
           </div>
 
           <form onSubmit={handleSearch}>
-            <h2 className="text-sm uppercase tracking-widest text-slate-500 font-semibold mb-3">Search Code</h2>
+            <h2 className="text-sm uppercase tracking-widest text-slate-400 font-bold mb-3">Search Code</h2>
             <div className="relative">
               <input
                 type="text"
                 placeholder="e.g. E1, CH05..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value.toUpperCase())}
-                className="w-full bg-bgCard border border-slate-700 rounded-md py-3 pl-4 pr-12 text-white placeholder-slate-500 focus:outline-none focus:border-cyanAccent focus:ring-1 focus:ring-cyanAccent mono uppercase"
+                className="w-full bg-slate-900 border-2 border-slate-600 rounded-md py-3 pl-4 pr-12 text-white placeholder-slate-400 focus:outline-none focus:border-cyanAccent focus:ring-0 mono uppercase font-bold"
               />
-              <button type="submit" className="absolute right-2 top-2 bottom-2 bg-slate-800 text-slate-300 hover:text-cyanAccent p-2 rounded hover:bg-slate-700 transition-colors">
+              <button type="submit" className="absolute right-2 top-2 bottom-2 bg-slate-800 text-slate-200 hover:text-bgDark hover:bg-cyanAccent p-2 rounded transition-colors font-bold">
                 <IconSearch />
               </button>
             </div>
           </form>
 
           <div>
-            <h2 className="text-sm uppercase tracking-widest text-slate-500 font-semibold mb-3">Browse by Category</h2>
+            <h2 className="text-sm uppercase tracking-widest text-slate-400 font-bold mb-3">Browse by Category</h2>
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map(cat => (
                 <button
                   key={cat}
                   onClick={() => handleCategorySelect(cat)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wider transition-colors border ${selectedCategory === cat ? 'bg-cyanAccent/20 border-cyanAccent text-cyanAccent shadow-[0_0_10px_rgba(0,212,255,0.2)]' : 'bg-bgCard border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white'}`}
+                  className={`px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-colors border ${selectedCategory === cat ? 'bg-cyanAccent border-cyanAccent text-bgDark shadow-[0_0_10px_rgba(0,212,255,0.4)]' : 'bg-slate-900 border-slate-600 text-slate-200 hover:border-cyanAccent hover:text-white'}`}
                 >
                   {cat}
                 </button>
@@ -174,13 +178,13 @@ function App() {
 
           {searchHistory.length > 0 && (
             <div>
-              <h2 className="text-sm uppercase tracking-widest text-slate-500 font-semibold mb-3">Recent Queries</h2>
+              <h2 className="text-sm uppercase tracking-widest text-slate-400 font-bold mb-3">Recent Queries</h2>
               <div className="flex flex-wrap gap-2">
                 {searchHistory.map((item, idx) => (
                   <button
                     key={idx}
                     onClick={() => selectHistoryItem(item)}
-                    className="bg-bgCard border border-slate-700 hover:border-cyanAccent text-slate-300 px-3 py-1 rounded-full text-sm mono transition-colors uppercase"
+                    className="bg-slate-900 border-2 border-slate-600 hover:border-cyanAccent text-white px-3 py-1 rounded-full text-sm font-bold mono transition-colors uppercase"
                   >
                     {item}
                   </button>
@@ -191,10 +195,10 @@ function App() {
         </div>
 
         <div className="md:col-span-8">
-          <h2 className="text-sm uppercase tracking-widest text-slate-500 font-semibold mb-3">Diagnostic Data</h2>
+          <h2 className="text-sm uppercase tracking-widest text-slate-400 font-bold mb-3">Diagnostic Data</h2>
           
           {!activeResult && !notFound && browseResults.length === 0 && (
-            <div className="bg-bgCard border border-slate-800 rounded-xl p-12 text-center text-slate-500 flex flex-col items-center mt-2">
+            <div className="bg-slate-900 border-2 border-slate-700 rounded-xl p-12 text-center text-slate-300 flex flex-col items-center mt-2 font-medium">
               <IconAlertCircle />
               <p className="mt-4">Select a brand and enter an error code, or browse by category to begin diagnostics.</p>
             </div>
@@ -203,8 +207,8 @@ function App() {
           {!activeResult && browseResults.length > 0 && (
             <div className="animate-fade-in">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-bold text-white">{selectedCategory}</h3>
-                <span className="text-sm font-medium text-slate-500 border border-slate-700 px-3 py-1 rounded-full bg-slate-800/50">
+                <h3 className="text-xl font-bold text-white">{selectedCategory}</h3>
+                <span className="text-sm font-bold text-white border-2 border-slate-600 px-3 py-1 rounded-full bg-slate-800">
                   {browseResults.length} {browseResults.length === 1 ? 'code' : 'codes'} found
                 </span>
               </div>
@@ -214,14 +218,14 @@ function App() {
                   <button 
                     key={res.errorCode}
                     onClick={() => setActiveResult(res)}
-                    className="text-left bg-bgCard border border-slate-700 hover:border-cyanAccent rounded-lg p-5 transition-colors group flex flex-col"
+                    className="text-left bg-slate-900 border-2 border-slate-700 hover:border-cyanAccent rounded-lg p-5 transition-colors group flex flex-col"
                   >
                     <div className="flex justify-between items-start mb-3 w-full">
                       <span className="mono text-cyanAccent font-bold text-xl group-hover:text-white transition-colors">{res.errorCode}</span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase font-bold border ${severityColors[res.severity]}`}>{res.severity}</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase font-bold border-2 ${severityColors[res.severity]}`}>{res.severity}</span>
                     </div>
-                    <p className="font-semibold text-white mb-2 line-clamp-1" dir={isRtl ? 'rtl' : 'ltr'}>{getText(res.problemTitle)}</p>
-                    <p className="text-sm text-slate-400 line-clamp-2 leading-relaxed" dir={isRtl ? 'rtl' : 'ltr'}>{getText(res.problemDescription)}</p>
+                    <p className="font-bold text-white mb-2 line-clamp-1" dir={isRtl ? 'rtl' : 'ltr'}>{getText(res.problemTitle)}</p>
+                    <p className="text-sm text-slate-300 font-medium line-clamp-2 leading-relaxed" dir={isRtl ? 'rtl' : 'ltr'}>{getText(res.problemDescription)}</p>
                   </button>
                 ))}
               </div>
@@ -229,27 +233,27 @@ function App() {
           )}
 
           {notFound && (
-            <div className="bg-bgCard border border-slate-700 rounded-xl p-8 text-center animate-fade-in shadow-lg mt-2">
-              <div className="inline-flex items-center justify-center p-4 bg-slate-800 rounded-full text-slate-400 mb-4">
+            <div className="bg-slate-900 border-2 border-slate-700 rounded-xl p-8 text-center animate-fade-in shadow-lg mt-2">
+              <div className="inline-flex items-center justify-center p-4 bg-slate-800 rounded-full text-slate-200 mb-4 border border-slate-600">
                 <IconAlertCircle />
               </div>
-              <h3 className="text-xl font-bold mb-2">Code Not Recognized</h3>
-              <p className="text-slate-400 mb-4">
-                The error code <span className="mono text-white tracking-widest">{searchQuery}</span> was not found in our database for <span className="text-white font-medium">{selectedBrand}</span>.
+              <h3 className="text-2xl font-bold mb-2 text-white">Code Not Recognized</h3>
+              <p className="text-slate-300 font-medium mb-4">
+                The error code <span className="mono text-cyanAccent font-bold tracking-widest">{searchQuery}</span> was not found in our database for <span className="text-white font-bold">{selectedBrand}</span>.
               </p>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-400 font-medium">
                 Please double-check the code or consult the official support documentation.
               </p>
             </div>
           )}
 
           {activeResult && (
-            <div className="bg-bgCard border border-slate-700 rounded-xl overflow-hidden animate-fade-in shadow-lg relative mt-2">
-              <div className="absolute top-0 left-0 w-full h-1 bg-cyanAccent"></div>
+            <div className="bg-slate-900 border-2 border-slate-700 rounded-xl overflow-hidden animate-fade-in shadow-lg relative mt-2">
+              <div className="absolute top-0 left-0 w-full h-2 bg-cyanAccent"></div>
               
               {selectedCategory && (
                 <div className="pt-6 px-8 pb-0">
-                  <button onClick={() => setActiveResult(null)} className="text-sm text-cyanAccent hover:text-white flex items-center gap-2 transition-colors font-medium">
+                  <button onClick={() => setActiveResult(null)} className="text-sm text-cyanAccent hover:text-white flex items-center gap-2 transition-colors font-bold">
                     <span className="text-lg leading-none mb-0.5">←</span> Back to {selectedCategory}
                   </button>
                 </div>
@@ -258,36 +262,36 @@ function App() {
               <div className={`p-8 ${selectedCategory ? 'pt-6' : ''}`}>
                 <div className="flex justify-between items-start mb-6">
                   <div>
-                    <span className="text-slate-400 text-sm font-medium">{activeResult.brand}</span>
-                    <h3 className="text-4xl font-bold mono text-cyanAccent mt-1 flex items-center gap-3 tracking-widest">
+                    <span className="text-slate-300 text-sm font-bold uppercase">{activeResult.brand}</span>
+                    <h3 className="text-5xl font-bold mono text-cyanAccent mt-1 flex items-center gap-3 tracking-widest">
                       {activeResult.errorCode.toUpperCase()}
                     </h3>
                   </div>
                   <div className="flex flex-col gap-2 items-end">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${severityColors[activeResult.severity]}`}>
+                    <span className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border-2 ${severityColors[activeResult.severity]}`}>
                       {activeResult.severity}
                     </span>
-                    <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border bg-slate-800 border-slate-600 text-slate-300">
+                    <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border-2 bg-slate-800 border-slate-500 text-white">
                       {activeResult.category || 'System Faults'}
                     </span>
                   </div>
                 </div>
 
                 <div className="mb-6" dir={isRtl ? 'rtl' : 'ltr'}>
-                  <h4 className="text-xl font-semibold mb-2 text-white">{getText(activeResult.problemTitle)}</h4>
-                  <p className={`text-slate-300 leading-relaxed bg-slate-800/50 p-4 rounded-lg border border-slate-700/50 ${isRtl ? 'pr-4 border-r-2 border-r-cyanAccent' : 'pl-4 border-l-2 border-l-cyanAccent'}`}>
+                  <h4 className="text-2xl font-bold mb-3 text-white">{getText(activeResult.problemTitle)}</h4>
+                  <p className={`text-white font-medium leading-relaxed bg-slate-800 p-4 rounded-lg border-2 border-slate-600 ${isRtl ? 'pr-4 border-r-4 border-r-cyanAccent' : 'pl-4 border-l-4 border-l-cyanAccent'}`}>
                     {getText(activeResult.problemDescription)}
                   </p>
                 </div>
 
                 <div dir={isRtl ? 'rtl' : 'ltr'}>
-                  <h4 className="text-sm uppercase tracking-widest text-slate-500 font-semibold mb-3 flex items-center gap-2">
+                  <h4 className="text-sm uppercase tracking-widest text-slate-400 font-bold mb-4 flex items-center gap-2">
                     {lang === 'fr' ? 'Actions Recommandées' : lang === 'ar' ? 'الإجراءات الموصى بها' : 'Recommended Actions'}
                   </h4>
                   <ul className="space-y-3">
                     {getArray(activeResult.solutionSteps).map((step, idx) => (
-                      <li key={idx} className="flex items-start gap-3 text-slate-300 bg-slate-800/20 p-3 rounded-lg border border-transparent hover:border-slate-700 transition-colors">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-xs font-mono text-cyanAccent mt-0.5">
+                      <li key={idx} className="flex items-start gap-3 text-white font-medium bg-slate-800 p-4 rounded-lg border-2 border-slate-700 hover:border-slate-500 transition-colors">
+                        <span className="flex-shrink-0 w-7 h-7 rounded-full bg-slate-900 border-2 border-cyanAccent flex items-center justify-center text-sm font-mono font-bold text-cyanAccent mt-0.5">
                           {idx + 1}
                         </span>
                         <span className="leading-relaxed">{step}</span>
@@ -297,19 +301,19 @@ function App() {
                 </div>
               </div>
 
-              <div className="bg-slate-800/80 px-8 py-4 border-t border-slate-700 flex items-center justify-between" dir={isRtl ? 'rtl' : 'ltr'}>
-                <div className="flex items-center gap-2">
-                  <span className="relative flex h-3 w-3">
+              <div className="bg-slate-800 px-8 py-5 border-t-2 border-slate-700 flex items-center justify-between" dir={isRtl ? 'rtl' : 'ltr'}>
+                <div className="flex items-center gap-3">
+                  <span className="relative flex h-4 w-4">
                     {activeResult.requiresTechnician ? (
                       <>
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                        <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 border border-red-800"></span>
                       </>
                     ) : (
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500 border border-green-800"></span>
                     )}
                   </span>
-                  <span className={`text-sm font-medium ${activeResult.requiresTechnician ? 'text-red-400' : 'text-green-400'}`}>
+                  <span className={`text-sm font-bold uppercase tracking-wide ${activeResult.requiresTechnician ? 'text-red-400' : 'text-green-400'}`}>
                     {activeResult.requiresTechnician 
                       ? (lang === 'fr' ? 'Technicien Professionnel Requis' : lang === 'ar' ? 'مطلوب فني محترف' : 'Professional Technician Required') 
                       : (lang === 'fr' ? 'Réparation Bricolage Possible' : lang === 'ar' ? 'إصلاح منزلي ممكن' : 'DIY Fix is Possible')}
@@ -321,7 +325,7 @@ function App() {
         </div>
       </div>
       
-      <footer className="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+      <footer className="mt-12 text-center text-slate-400 font-bold text-sm border-t-2 border-slate-800 pt-6">
         <p>CoolFix Database v1.0 • For reference only.</p>
       </footer>
 
@@ -333,15 +337,16 @@ function App() {
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         
         .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
+          width: 8px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: #1E293B; 
+          background: #0F172A; 
           border-radius: 8px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
           background: #334155; 
           border-radius: 8px;
+          border: 2px solid #0F172A;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: #475569; 
